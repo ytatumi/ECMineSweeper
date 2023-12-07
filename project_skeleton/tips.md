@@ -25,5 +25,7 @@ After having implemeneted this, we continue with the cursor operations:
 - Implement a lose screen that appears when you press a bomb, allowing you to restart the program
 - Implement a score counter
 - Implement a "sprite" (image) that is a bomb instead of the X
+- Implement a win mechanic for when you have correctly selected all none-bomb squares!
+- Implement the functionality to leave a flag where the user suspect there might be a bomb, for example if they right click they place a warning flag as a reminder
 
 There are ofc many more! These are just some ideas

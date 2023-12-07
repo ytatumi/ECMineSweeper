@@ -3,13 +3,13 @@
 (Notera: Vi kommer skippa virutal environment för att smida på rättning även om det borde användas!)
 
 Efter att ha forkat och sedan klonat repositoriet:
-- Kör kommandot pip install -r requirements.txt för att få hem samtliga bibliotek som behövs
-- Kör koden i main.py!
+- Kör kommandot pip install pygame för att få hem pygame
+- Kör koden i main.py för att starta programmet!
 
 ## Hur funkar spelet?
 Kort och gott: Spelet består av en 16x16 matris
 En cell (ruta) kan bestå av en bomb, klickar man en bomb förlorar man
-Klickar man en cell och det INTE är en bomb får man en siffra som berättar hur många bomber som ligger brevid
+Klickar man en cell och det INTE är en bomb får man en siffra som berättar hur många bomber som ligger brevid, målet är att ta alla rutor som inte är bomber
 
 En cell kan maximalt ha 8 rutor brevid sig
 
