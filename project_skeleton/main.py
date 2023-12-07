@@ -8,12 +8,12 @@ from calcs import measure_distance
 pygame.init()
 
 SCREEN_MIN_SIZE = 750  # Can be made to autoadjust after % of ur screen
-amount_of_cells = 16  # The amount of cells is equal in rows and columns, 16x16
-bomb_chance = 0.25
+amount_of_cells = 16  # The amount of cells is equal in rows and columns, 16x16 (LOCKED)
+bomb_chance = 0.25  # Change to prefered value or use default 0.25
 
 CELL_SIZE = SCREEN_MIN_SIZE // amount_of_cells  # how large can each cell be?
 READJUSTED_SIZE = CELL_SIZE * amount_of_cells
-CELL_WIDTH = CELL_HEIGHT = CELL_SIZE
+CELL_WIDTH = CELL_HEIGHT = CELL_SIZE  # Probably not needed, just use cell_size
 
 SCREEN_WIDTH, SCREEN_HEIGHT = READJUSTED_SIZE, READJUSTED_SIZE
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
@@ -72,7 +72,7 @@ def main():
             event_handler(event)
 
         draw()
-        pygame.display.update()
+        pygame.display.flip()
 
     terminate_program()
 
