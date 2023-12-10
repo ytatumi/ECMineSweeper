@@ -21,6 +21,7 @@ After having implemeneted this, we continue with the cursor operations:
 
 ## Here you are basically done! The game is playable although there is no win/lose condition implemented. Here are some tips to build out the game:
 
+## COMPLETELY OPTIONAL NOT REQUIRED FOR ASSIGNMENT
 - Sort out any minor bugs, such as pressing in upper left area of a cell
 - Implement a lose screen that appears when you press a bomb, allowing you to restart the program
 - Implement a score counter

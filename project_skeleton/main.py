@@ -9,8 +9,8 @@ pygame.init()
 
 displayInfo = pygame.display.Info()
 SCREEN_MIN_SIZE = round(min(displayInfo.current_w, displayInfo.current_h)* 0.8)
-amount_of_cells = 16  # The amount of cells is equal in rows and columns, 16x16
-bomb_chance = 0.25
+amount_of_cells = 16  # The amount of cells is equal in rows and columns, 16x16 (LOCKED)
+bomb_chance = 0.25  # Change to prefered value or use default 0.25
 total_score = 0
 selected_cells_count = 0
 total_bomb_count = 0
