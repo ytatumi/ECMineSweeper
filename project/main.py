@@ -27,7 +27,7 @@ BOMB_IMAGE = pygame.transform.scale(BOMB_IMAGE, (CELL_WIDTH, CELL_HEIGHT))
 FLAG_IMAGE = pygame.image.load(os.path.join("images", "flag.png"))
 FLAG_IMAGE = pygame.transform.scale(FLAG_IMAGE, (CELL_WIDTH, CELL_HEIGHT))
 
-COUNT_NEIGHBORING_BOMB_FONT = pygame.font.SysFont("comicsans", 15)
+SCORE_FONT = pygame.font.SysFont("comicsans", 15)
 GAMEEND_FONT = pygame.font.SysFont("comicsans", 35)
 GAMEEND_FONT2 = pygame.font.SysFont("comicsans", 30)
 SCORE_FONT = pygame.font.SysFont("comicsans", 20)
@@ -49,7 +49,9 @@ def create_cells():
         row = []
         x = 0
         for _ in range(amount_of_cells):
-            row.append(Cell(x, y, CELL_WIDTH, CELL_HEIGHT, bomb_chance))
+            row.append(
+                Cell(x, y, CELL_WIDTH, CELL_HEIGHT, bomb_chance, BOMB_IMAGE, FLAG_IMAGE)
+            )
             x += CELL_WIDTH
         cells.append(row)
         y += CELL_HEIGHT
@@ -97,54 +99,29 @@ def count_neighboring_bomb(row_num, col_num):
         cells[row_num][col_num].neighbouring_bombs += 1
 
 
-def draw_neighboring_bomb_counts(row_num, col_num):
-    neiboring_bomb_counter_text = COUNT_NEIGHBORING_BOMB_FONT.render(
-        str(cells[row_num][col_num].neighbouring_bombs), 1, WHITE
-    )
-    screen.blit(
-        neiboring_bomb_counter_text,
-        (
-            cells[row_num][col_num].cell_center[0]
-            - (neiboring_bomb_counter_text.get_width() // 2),
-            cells[row_num][col_num].cell_center[1]
-            - (neiboring_bomb_counter_text.get_height() // 2),
-        ),
-    )
-
-
 def draw_score():
-    score_text = COUNT_NEIGHBORING_BOMB_FONT.render(
-        f"SCORE: {selected_cells_count}", 1, WHITE
-    )
+    score_text = SCORE_FONT.render(f"SCORE: {selected_cells_count}", 1, WHITE)
     screen.blit(score_text, (READJUSTED_SIZE - (score_text.get_width() + 20), 0))
-
-
-def draw_bomb(row_num, col_num):
-    screen.blit(BOMB_IMAGE, (cells[row_num][col_num].x, cells[row_num][col_num].y))
-
-
-def draw_flag(row_num, col_num):
-    screen.blit(FLAG_IMAGE, (cells[row_num][col_num].x, cells[row_num][col_num].y))
 
 
 def draw_game():
     global total_bomb_count, amount_of_cells, selected_cells_count
     for row_num in range(amount_of_cells):
         for col_num in range(amount_of_cells):
-            if cells[row_num][col_num].selected == True:
-                if not cells[row_num][col_num].bomb:
-                    draw_neighboring_bomb_counts(row_num, col_num)
+            cell = cells[row_num][col_num]
+            if cell.selected:
+                if not cell.bomb:
+                    cell.draw_neighboring_bomb_counts(screen)
                 else:
-                    draw_bomb(row_num, col_num)
+                    cell.draw_bomb(screen)
                     draw_gameend_text("YOU BLEW UP!! GAME OVER!")
             if total_bomb_count == (amount_of_cells**2 - selected_cells_count):
                 draw_gameend_text("YOU WON!! Congratulations!")
-            if cells[row_num][col_num].flag == True:
-                draw_flag(row_num, col_num)
+            if cell.flag:
+                cell.draw_flag(screen)
 
 
 def draw_gameend_text(text):
-    global GAMEEND
     gameover_text = GAMEEND_FONT.render(text, 1, RED)
     screen.blit(
         gameover_text,
@@ -153,7 +130,6 @@ def draw_gameend_text(text):
             (READJUSTED_SIZE - gameover_text.get_height()) // 2,
         ),
     )
-    GAMEEND = True
     restart_text = GAMEEND_FONT2.render("** Press key A to see the answer! **", 1, RED)
     screen.blit(
         restart_text,
@@ -175,10 +151,11 @@ def draw_gameend_text(text):
 def draw_answer():
     for row_num in range(amount_of_cells):
         for col_num in range(amount_of_cells):
+            cell = cells[row_num][col_num]
             if cells[row_num][col_num].bomb:
-                draw_bomb(row_num, col_num)
+                cell.draw_bomb(screen)
             else:
-                draw_neighboring_bomb_counts(row_num, col_num)
+                cell.draw_neighboring_bomb_counts(screen)
 
 
 def draw():
@@ -195,9 +172,10 @@ def draw():
 
 def event_handler(event):
     """This function handles all events in the program"""
-    global running, selected_cells_count, ANSWER
+    global selected_cells_count, ANSWER, GAMEEND
+
     if event.type == pygame.QUIT:
-        running = False
+        # running = False
         terminate_program()
     if event.type == pygame.MOUSEBUTTONDOWN and not GAMEEND:
         x, y = pygame.mouse.get_pos()
@@ -208,6 +186,8 @@ def event_handler(event):
                     cells[row_num][col_num].flag = False
                 cells[row_num][col_num].selected = True
                 selected_cells_count += 1
+                if cells[row_num][col_num].bomb == True:
+                    GAMEEND = True
         elif event.button == 3:  # Right click
             if not cells[row_num][col_num].flag:
                 cells[row_num][col_num].flag = True
@@ -219,7 +199,7 @@ def event_handler(event):
             ANSWER = True
         elif event.key == pygame.K_s:
             game_reset()
-            main()
+            run_setup()
 
 
 def run_setup():
@@ -263,8 +243,6 @@ def main():
         draw()
         pygame.display.flip()
         clock.tick(FPS)
-
-    terminate_program()
 
 
 if __name__ == "__main__":
