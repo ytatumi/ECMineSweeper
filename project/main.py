@@ -38,6 +38,7 @@ RED = (255, 0, 0)
 
 GAMEEND = False
 ANSWER = False
+WIN = False
 
 cells = []
 
@@ -59,9 +60,13 @@ def create_cells():
 
 def draw_cells():
     """In this function we want to draw each cell, i.e call upon each cells .draw() method!"""
+    global ANSWER
     for row in cells:
         for cell in row:
-            cell.draw(screen)
+            if not ANSWER:
+                cell.draw(screen)
+            else:
+                cell.draw_answer(screen)
 
 
 def get_cell_number(x, y):
@@ -104,23 +109,6 @@ def draw_score():
     screen.blit(score_text, (READJUSTED_SIZE - (score_text.get_width() + 20), 0))
 
 
-def draw_game():
-    global total_bomb_count, amount_of_cells, selected_cells_count
-    for row_num in range(amount_of_cells):
-        for col_num in range(amount_of_cells):
-            cell = cells[row_num][col_num]
-            if cell.selected:
-                if not cell.bomb:
-                    cell.draw_neighboring_bomb_counts(screen)
-                else:
-                    cell.draw_bomb(screen)
-                    draw_gameend_text("YOU BLEW UP!! GAME OVER!")
-            if total_bomb_count == (amount_of_cells**2 - selected_cells_count):
-                draw_gameend_text("YOU WON!! Congratulations!")
-            if cell.flag:
-                cell.draw_flag(screen)
-
-
 def draw_gameend_text(text):
     gameover_text = GAMEEND_FONT.render(text, 1, RED)
     screen.blit(
@@ -148,31 +136,21 @@ def draw_gameend_text(text):
     )
 
 
-def draw_answer():
-    for row_num in range(amount_of_cells):
-        for col_num in range(amount_of_cells):
-            cell = cells[row_num][col_num]
-            if cells[row_num][col_num].bomb:
-                cell.draw_bomb(screen)
-            else:
-                cell.draw_neighboring_bomb_counts(screen)
-
-
 def draw():
     """This function handles all the drawings to the screen, such as drawing rectangles, objects etc"""
-    global ANSWER
     draw_cells()
+    draw_score()
 
-    if ANSWER:
-        draw_answer()
-    else:
-        draw_game()
-        draw_score()
+    if GAMEEND == True:
+        if WIN:
+            draw_gameend_text("YOU WON!! Congratulations!")
+        else:
+            draw_gameend_text("YOU BLEW UP!! GAME OVER!")
 
 
 def event_handler(event):
     """This function handles all events in the program"""
-    global selected_cells_count, ANSWER, GAMEEND
+    global selected_cells_count, ANSWER, GAMEEND, WIN
 
     if event.type == pygame.QUIT:
         # running = False
@@ -186,8 +164,10 @@ def event_handler(event):
                     cells[row_num][col_num].flag = False
                 cells[row_num][col_num].selected = True
                 selected_cells_count += 1
-                if cells[row_num][col_num].bomb == True:
+                if cells[row_num][col_num].bomb:  # Game End : Lose
                     GAMEEND = True
+                elif total_bomb_count == (amount_of_cells**2 - selected_cells_count):
+                    GAMEEND, WIN = True
         elif event.button == 3:  # Right click
             if not cells[row_num][col_num].flag:
                 cells[row_num][col_num].flag = True

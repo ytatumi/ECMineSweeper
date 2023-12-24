@@ -28,8 +28,7 @@ class Cell:
         self.flag_image = flag_image
         self.count_neighboring_bomb_font = pygame.font.SysFont("comicsans", 15)
 
-    def draw(self, screen):
-        """This method is called in the main.py files draw_cells fkn"""
+    def draw_cell(self, screen):
         pygame.draw.rect(
             screen,
             self.color,
@@ -50,9 +49,27 @@ class Cell:
         )
 
     def draw_bomb(self, screen):
-        if self.bomb:
-            screen.blit(self.bomb_image, (self.x, self.y))
+        screen.blit(self.bomb_image, (self.x, self.y))
 
     def draw_flag(self, screen):
+        screen.blit(self.flag_image, (self.x, self.y))
+
+    def draw(self, screen):
+        """This method is called in the main.py files draw_cells function"""
+        self.draw_cell(screen)
+        if self.selected:
+            if not self.bomb:
+                self.draw_neighboring_bomb_counts(screen)
+            else:
+                self.draw_bomb(screen)
+
         if self.flag:
-            screen.blit(self.flag_image, (self.x, self.y))
+            self.draw_flag(screen)
+
+    def draw_answer(self, screen):
+        """This method is called in the main.py files draw_cells function"""
+        self.draw_cell(screen)
+        if self.bomb:
+            self.draw_bomb(screen)
+        else:
+            self.draw_neighboring_bomb_counts(screen)
