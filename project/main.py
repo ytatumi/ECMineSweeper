@@ -105,8 +105,12 @@ def count_neighboring_bomb(row_num, col_num):
 
 
 def draw_score():
-    score_text = SCORE_FONT.render(f"SCORE: {selected_cells_count}", 1, WHITE)
-    screen.blit(score_text, (READJUSTED_SIZE - (score_text.get_width() + 20), 0))
+    if GAMEEND and not WIN:
+        score_text = SCORE_FONT.render(f"SCORE: {selected_cells_count-1}", 1, WHITE)
+        screen.blit(score_text, (READJUSTED_SIZE - (score_text.get_width() + 20), 0))
+    else:
+        score_text = SCORE_FONT.render(f"SCORE: {selected_cells_count}", 1, WHITE)
+        screen.blit(score_text, (READJUSTED_SIZE - (score_text.get_width() + 20), 0))
 
 
 def draw_gameend_text(text):
@@ -166,7 +170,9 @@ def event_handler(event):
                 selected_cells_count += 1
                 if cells[row_num][col_num].bomb:  # Game End : Lose
                     GAMEEND = True
-                elif total_bomb_count == (amount_of_cells**2 - selected_cells_count):
+                elif total_bomb_count == (
+                    amount_of_cells**2 - selected_cells_count
+                ):  # WIN
                     GAMEEND, WIN = True
         elif event.button == 3:  # Right click
             if not cells[row_num][col_num].flag:
@@ -176,7 +182,10 @@ def event_handler(event):
 
     if event.type == pygame.KEYDOWN and GAMEEND:
         if event.key == pygame.K_a:
-            ANSWER = True
+            if ANSWER == False:
+                ANSWER = True
+            else:
+                ANSWER = False
         elif event.key == pygame.K_s:
             game_reset()
             run_setup()
