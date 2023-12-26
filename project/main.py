@@ -22,8 +22,10 @@ SCREEN_WIDTH, SCREEN_HEIGHT = READJUSTED_SIZE, READJUSTED_SIZE
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 pygame.display.set_caption("MineSweeper")
 
+# Bomb image : https://pixabay.com/vectors/bomb-cartoon-iconic-2025548/
 BOMB_IMAGE = pygame.image.load(os.path.join("images", "bomb.png"))
 BOMB_IMAGE = pygame.transform.scale(BOMB_IMAGE, (CELL_WIDTH, CELL_HEIGHT))
+# Flag image: https://www.freepik.com/icon/finish_2164733
 FLAG_IMAGE = pygame.image.load(os.path.join("images", "flag.png"))
 FLAG_IMAGE = pygame.transform.scale(FLAG_IMAGE, (CELL_WIDTH, CELL_HEIGHT))
 
